@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch problem data from backend
     async function fetchProblem(problemId) {
         try {
-            const response = await fetch(`${API_BASE_URL}/problem/${14}`);
+            const response = await fetch(`${API_BASE_URL}/problem/${15}`);
             if (!response.ok) {
                 throw new Error(`Failed to fetch problem: ${response.statusText}`);
             }

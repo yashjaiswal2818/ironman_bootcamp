@@ -196,7 +196,9 @@
                     }
                     return;
                 }
-                window.location.href = 'leaderboard.html?from=2';
+                if (proceedWrap) {
+                    proceedWrap.classList.add('hidden');
+                }
             });
         }
 
@@ -284,9 +286,6 @@
                             feedback.className = 'mb-3 p-4 rounded-lg border border-ingest-green/50 bg-ingest-green/5 text-xs font-mono';
                         }
                         if (stage2Timer) stage2Timer.stop();
-                        setTimeout(function () {
-                            window.location.href = 'leaderboard.html?from=2';
-                        }, 1500);
                     } else {
                         var msg = (window.FormUtils && window.FormUtils.parseApiError(result.data, result.status)) || 'Submission failed: ' + result.status;
                         if (window.UIUtils) {
