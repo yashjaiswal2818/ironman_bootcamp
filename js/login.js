@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (loginMessageEl) loginMessageEl.style.display = 'none';
 
             // Check if endpoint is using Leader_Email or Loader_Email based on requirements
-            const url = `https://gdg-ironman-participants-latest.onrender.com/login?Team_Name=${encodeURIComponent(teamName)}&Leader_Email=${encodeURIComponent(leaderEmail)}`;
-            const fallbackUrl = `https://gdg-ironman-participants-latest.onrender.com/login?Team_Name=${encodeURIComponent(teamName)}&Loader_Email=${encodeURIComponent(leaderEmail)}`;
+            const url = `https://gdg-ironman-participants-latest-1.onrender.com/login?Team_Name=${encodeURIComponent(teamName)}&Leader_Email=${encodeURIComponent(leaderEmail)}`;
+            const fallbackUrl = `https://gdg-ironman-participants-latest-1.onrender.com/login?Team_Name=${encodeURIComponent(teamName)}&Loader_Email=${encodeURIComponent(leaderEmail)}`;
 
             let response = await fetch(fallbackUrl); // Using Loader_Email as per user url example, although Leader_Email was mentioned. It's safer to use the one from the provided URL.
 

@@ -185,7 +185,7 @@ async def submit_round_3_endpoint(
     files: List[UploadFile] = File(...),
     db: AsyncSession = Depends(get_db)
 ):
-    event, uploaded_urls = await submit_round_3_service(
+    event, uploaded_urls, already_submitted = await submit_round_3_service(
         db=db,
         Team_Name=Team_Name,
         figma_links=figma_links,
@@ -194,9 +194,16 @@ async def submit_round_3_endpoint(
         score_3=0,
         files=files
     )
+    if already_submitted:
+        return {
+            "message": "Already submitted",
+            "urls": [],
+            "already_submitted": True
+        }
     return {
         "message": "Submitted successfully",
-        "urls": uploaded_urls
+        "urls": uploaded_urls,
+        "already_submitted": False
     }
 
 
@@ -205,8 +212,7 @@ async def submit_round_4_endpoint(
     round_4: Round_4_Submit,
     db: AsyncSession = Depends(get_db)
 ):
-
-    event = await submit_round_4_service(
+    event, already_submitted = await submit_round_4_service(
         db=db,
         Team_Name=round_4.Team_Name,
         structured_submission=round_4.structured_submission,
@@ -214,10 +220,16 @@ async def submit_round_4_endpoint(
         question=round_4.question,
         score_4=round_4.score_4
     )
-
+    if already_submitted:
+        return {
+            "message": "Already submitted",
+            "event": event,
+            "already_submitted": True
+        }
     return {
         "message": "Submitted successfully",
-        "event": event
+        "event": event,
+        "already_submitted": False
     }
 
 @app.get("/leaderboard")

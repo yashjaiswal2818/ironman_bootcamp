@@ -6,7 +6,7 @@
     'use strict';
 
     window.API_CONFIG = {
-        BASE_URL: 'https://gdg-ironman-participants-latest.onrender.com',
+        BASE_URL: 'https://gdg-ironman-participants-latest-1.onrender.com',
         TEST_TEAM_NAME: 'xyz'
     };
 

@@ -290,7 +290,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <span class="card-button">Round starts in 5 hours</span>
+                            <span class="card-button">Begin</span>
                         </div>
                     </div>
                     <div class="dots-pattern">
@@ -352,7 +352,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <span class="card-button">Round starts in 5 hours</span>
+                            <span class="card-button">Begin</span>
                         </div>
                     </div>
                     <div class="dots-pattern">
@@ -375,7 +375,8 @@
                     <div class="stamp"><span class="stamp-text">Stage</span></div>
                 </div>
 
-                <a class="stage-card" data-stage="5" aria-disabled="true" style="pointer-events: none; opacity: 0.5; cursor: default;">
+                <a class="stage-card" data-stage="5" aria-disabled="true"
+                    style="pointer-events: none; opacity: 0.5; cursor: default;">
                     <div class="card-pattern-grid"></div>
                     <div class="card-overlay-dots"></div>
                     <div class="bold-pattern">
@@ -508,25 +509,33 @@
                     <div class="card-description">
                         Already registered? Authenticate your team credentials to access Stage 3.
                     </div>
-                    
-                    <form id="login-form" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; position: relative; z-index: 10;">
+
+                    <form id="login-form"
+                        style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; position: relative; z-index: 10;">
                         <div>
-                            <label for="login-team-name" style="display: block; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: #000; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.1em;">TEAM NAME</label>
+                            <label for="login-team-name"
+                                style="display: block; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: #000; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.1em;">TEAM
+                                NAME</label>
                             <input type="text" id="login-team-name" required placeholder="ENTER TEAM DESIGNATION"
                                 style="width: 100%; background: transparent; border: 2px solid #000; color: #000; padding: 0.75rem; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 600; border-radius: 4px;">
                         </div>
                         <div>
-                            <label for="login-leader-email" style="display: block; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: #000; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.1em;">LEADER EMAIL</label>
+                            <label for="login-leader-email"
+                                style="display: block; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: #000; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.1em;">LEADER
+                                EMAIL</label>
                             <input type="email" id="login-leader-email" required placeholder="ENTER COMMANDER EMAIL"
                                 style="width: 100%; background: transparent; border: 2px solid #000; color: #000; padding: 0.75rem; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 600; border-radius: 4px;">
                         </div>
-                        <button type="submit" id="login-submit-btn" class="card-button register-cta-btn" style="border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; width: 100%; font-family: 'Orbitron', sans-serif; background-color: #06f9f9; translate: none;">
+                        <button type="submit" id="login-submit-btn" class="card-button register-cta-btn"
+                            style="border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; width: 100%; font-family: 'Orbitron', sans-serif; background-color: #06f9f9; translate: none;">
                             <span>AUTHENTICATE</span>
                             <span class="btn-arrow">→</span>
                         </button>
                     </form>
 
-                    <div id="login-message" style="display: none; margin-top: 1rem; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: #e53e3e; font-weight: bold; text-align: center;"></div>
+                    <div id="login-message"
+                        style="display: none; margin-top: 1rem; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: #e53e3e; font-weight: bold; text-align: center;">
+                    </div>
 
                     <div class="register-footer" style="margin-top: 1.5rem;">
                         <p class="register-note">
@@ -571,7 +580,7 @@
             <div class="footer-section">
                 <h3 class="footer-title">QUICK LINKS</h3>
                 <div class="footer-links">
-                    <a href="#login" class="footer-link">Login</a>
+                    <a href="#login" id="footer-auth-link" class="footer-link">Login</a>
                     <a href="html/register.html" class="footer-link">Register</a>
                     <a href="https://www.instagram.com/gdgpce?igsh=cXZuenJtdTAwMmpn" target="_blank"
                         rel="noopener noreferrer" class="footer-link">Instagram</a>
@@ -671,14 +680,17 @@
             <span id="display-team-name"></span>
         </div>
         <div class="navbar-actions" style="display: flex; align-items: center; gap: 1.5rem; pointer-events: auto;">
-            <a href="#login" class="navbar-login-btn" style="color: rgba(255, 255, 255, 0.9); text-decoration: none; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; transition: color 0.25s linear; display: flex; align-items: center;" onmouseover="this.style.color='#00ffff'" onmouseout="this.style.color='rgba(255, 255, 255, 0.9)'">
+            <a href="#login" id="navbar-auth-btn" class="navbar-login-btn"
+                style="color: rgba(255, 255, 255, 0.9); text-decoration: none; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; transition: color 0.25s linear; display: flex; align-items: center;"
+                onmouseover="this.style.color='#00ffff'" onmouseout="this.style.color='rgba(255, 255, 255, 0.9)'">
                 LOGIN
             </a>
             <button class="navbar-menu-button" id="navbar-toggle" aria-label="Toggle navigation">
                 <span class="menu-label">Menu</span>
                 <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="menu-icon">
                     <path d="M12.0005 5.49894V6.99894H8.50047V5.49894H12.0005Z" fill="currentcolor"></path>
-                    <path d="M3.5 5.49756V6.99756L0 6.99756L6.55637e-08 5.49756L3.5 5.49756Z" fill="currentcolor"></path>
+                    <path d="M3.5 5.49756V6.99756L0 6.99756L6.55637e-08 5.49756L3.5 5.49756Z" fill="currentcolor">
+                    </path>
                     <path d="M6.50106 11.9982H5.00106V8.49824H6.50106V11.9982Z" fill="currentcolor"></path>
                     <path d="M6.49968 3.49777L4.99968 3.49777L4.99968 -0.00222778L6.49968 -0.00222759L6.49968 3.49777Z"
                         fill="currentcolor"></path>
@@ -719,17 +731,53 @@
     </nav>
 
 
+    <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
     <script src="js/login.js"></script>
     <script>
-        // Display logged-in team name
+        // Display logged-in team name, hide login card when logged in, show LOGOUT in navbar
         document.addEventListener('DOMContentLoaded', function () {
             var teamName = sessionStorage.getItem('teamName');
             var badge = document.getElementById('navbar-team-badge');
             var displayEl = document.getElementById('display-team-name');
-            if (teamName && badge && displayEl) {
-                displayEl.textContent = teamName;
-                badge.style.display = 'flex';
+            var loginSection = document.getElementById('login');
+            var authBtn = document.getElementById('navbar-auth-btn');
+            var menuLoginLink = document.querySelector('.menu-link[href="#login"]');
+            var footerAuthLink = document.getElementById('footer-auth-link');
+
+            if (teamName && teamName.trim()) {
+                if (badge && displayEl) {
+                    displayEl.textContent = teamName;
+                    badge.style.display = 'flex';
+                }
+                if (loginSection) loginSection.style.display = 'none';
+                if (authBtn) {
+                    authBtn.textContent = 'LOGOUT';
+                    authBtn.href = '#';
+                    authBtn.style.cursor = 'pointer';
+                    authBtn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        if (window.auth && window.auth.logout) window.auth.logout();
+                    });
+                }
+                if (menuLoginLink) {
+                    menuLoginLink.textContent = 'LOGOUT';
+                    menuLoginLink.href = '#';
+                    menuLoginLink.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        if (window.auth && window.auth.logout) window.auth.logout();
+                    });
+                }
+                if (footerAuthLink) {
+                    footerAuthLink.textContent = 'Logout';
+                    footerAuthLink.href = '#';
+                    footerAuthLink.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        if (window.auth && window.auth.logout) window.auth.logout();
+                    });
+                }
+            } else {
+                if (loginSection) loginSection.style.display = '';
             }
         });
         // Initialize scroll reveal animations

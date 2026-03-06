@@ -104,7 +104,7 @@
             style="background-image: linear-gradient(#243b47 1px, transparent 1px), linear-gradient(90deg, #243b47 1px, transparent 1px); background-size: 80px 80px;">
         </div>
         <div
-            class="relative w-full max-w-[680px] glass-panel rounded-lg shadow-panel border-t border-t-primary/30 flex flex-col max-h-[calc(100vh-100px)] overflow-hidden">
+            class="relative w-full max-w-6xl glass-panel rounded-lg shadow-panel border-t border-t-primary/30 flex flex-col max-h-[calc(100vh-100px)] overflow-hidden">
             <div class="px-4 py-3 border-b border-[#243b47]/50 flex justify-between items-center flex-none shrink-0">
                 <div>
                     <h1 class="text-lg font-bold tracking-tight text-white uppercase">Stage 3: Uplink Protocol</h1>
@@ -114,7 +114,78 @@
                     <span class="text-[9px] font-bold tracking-widest text-emerald-500">ONLINE</span>
                 </div>
             </div>
-            <div class="p-4 grid gap-3 overflow-y-auto min-h-0 flex-1">
+            <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden">
+                <!-- Left: Design Task Briefing -->
+                <div class="p-4 border-r-0 lg:border-r border-[#243b47]/50 bg-[#0d1418]/40 overflow-y-auto min-h-0">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="material-symbols-outlined text-primary !text-[20px]">assignment</span>
+                        <h2 class="text-sm font-bold tracking-widest text-primary uppercase">Design Task</h2>
+                    </div>
+                    <p class="text-slate-300 text-xs font-body leading-relaxed mb-4">
+                        Create a single screen combat Heads-Up Display (HUD) that helps Iron Man monitor and track enemy targets during a mission.
+                        Your design should focus on clarity, situational awareness, and fast decision-making, ensuring that the most critical information is easy to identify during combat.
+                        The design should reflect the advanced technological style of Stark Industries.
+                    </p>
+
+                    <div class="mb-4">
+                        <h3 class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Required UI Components</h3>
+                        <ol class="space-y-2.5 text-xs font-body text-slate-300">
+                            <li class="flex gap-2">
+                                <span class="text-primary font-bold shrink-0">1.</span>
+                                <div>
+                                    <strong class="text-white">Target Tracking Reticle</strong> — A visual targeting system used to lock onto enemies. Must indicate: current target, target lock status, target position relative to Iron Man.
+                                </div>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-primary font-bold shrink-0">2.</span>
+                                <div>
+                                    <strong class="text-white">Threat Level Indicator</strong> — Visual system showing severity of nearby threats (Low / Medium / High). Use colors, icons, or warning signals.
+                                </div>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-primary font-bold shrink-0">3.</span>
+                                <div>
+                                    <strong class="text-white">Distance / Range Display</strong> — Distance between Iron Man and detected target (meters or logical format). Helps determine engagement strategy.
+                                </div>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-primary font-bold shrink-0">4.</span>
+                                <div>
+                                    <strong class="text-white">Weapon Readiness Status</strong> — Status of combat systems (Ready / Charging / Cooling down / Disabled). Use progress bars, indicators, or system panels.
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Design Guidelines</h3>
+                        <ul class="space-y-1.5 text-xs font-body text-slate-300 list-disc list-inside">
+                            <li>Resemble a futuristic combat HUD similar to advanced armor systems</li>
+                            <li>Maintain clear visual hierarchy for critical information</li>
+                            <li>Use clean layouts and avoid unnecessary clutter</li>
+                            <li>Use colors and typography strategically for warnings and combat data</li>
+                            <li>Interface should feel advanced, minimal, and technology-driven (Stark Industries style)</li>
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 gap-y-2 text-xs mb-4">
+                        <div class="flex items-center gap-1.5">
+                            
+                           
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-[#243b47]/50">
+                        <h3 class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Deliverables</h3>
+                        <ul class="space-y-1.5 text-xs font-body text-slate-300">
+                            <li>• Design link (Figma / Canva / Adobe XD / similar tool)</li>
+                            <li>• Screenshot of the design (optional but recommended)</li>
+                            <li>• Optional: Short explanation (max 100 words) describing design approach</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Right: Input Fields -->
+                <div class="p-4 grid gap-3 overflow-y-auto min-h-0">
                 <div class="group form-group">
                     <div class="flex items-center justify-between mb-1.5">
                         <label class="text-xs font-bold tracking-widest text-slate-300 flex items-center gap-1.5">
@@ -125,7 +196,7 @@
                     </div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-slate-500 font-mono text-xs">https://</span>
+                            <span class="text-slate-600">Link</span>
                         </div>
                         <input id="figma-link"
                             class="w-full bg-[#0d1418]/80 border border-[#243b47] text-white text-xs font-mono rounded pl-16 pr-8 py-2.5 focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder-slate-600"
@@ -185,6 +256,7 @@
                             <div class="w-1.5 h-1.5 bg-slate-700 rounded-full"></div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
             <div

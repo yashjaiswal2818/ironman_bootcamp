@@ -36,23 +36,23 @@
 
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    // ONLY stagethree.html is enabled for logged-in users. All other stage 3+ pages stay locked.
-    const LOGIN_UNLOCKED_PAGE = 'stagethree.html';
+    // Stage 3+ pages enabled for logged-in users
+    const LOGIN_UNLOCKED_PAGES = ['stagethree.html', 'stagethree_hub.html', 'stagefour.html', 'stagefour_logic_hub.html'];
 
     (function enforceStageLock() {
         const stage = STAGE_MAP[currentPage];
         if (typeof stage !== 'number') return;
         if (stage <= MAX_STAGE_UNLOCKED) return; // Stages 1-2 always allowed
 
-        // Stage 3+ pages: only stagethree.html allowed when logged in
+        // Stage 3+ pages: allowed when logged in
         const teamName = (function() {
             try { return sessionStorage.getItem('teamName') || ''; } catch (e) { return ''; }
         })();
         const isLoggedIn = teamName && teamName.trim() !== '';
-        const isUnlockedPage = currentPage === LOGIN_UNLOCKED_PAGE;
+        const isUnlockedPage = LOGIN_UNLOCKED_PAGES.includes(currentPage);
 
         if (isLoggedIn && isUnlockedPage) {
-            return; // Logged in + on stagethree.html - allow
+            return; // Logged in + on allowed stage 3 page - allow
         }
         // Block: stagethree_hub, stagefour, stagefive, or stagethree when not logged in
         window.location.replace('../index.html#login');
@@ -64,13 +64,25 @@
     const ENABLE_ACCESS_CONTROL = false; // Set to true to enable registration access control
     // ============================================
 
+    // Logout: clear session and redirect to home (available in all modes)
+    function logout() {
+        try {
+            sessionStorage.clear();
+        } catch (e) {
+            console.warn('sessionStorage clear failed:', e);
+        }
+        var base = (window.location.pathname.indexOf('/html/') !== -1) ? '..' : '.';
+        window.location.replace(base + '/index.html');
+    }
+
     // If access control is disabled, export no-op helpers but keep stage lock active
     if (!ENABLE_ACCESS_CONTROL) {
         console.log('Access control disabled for testing');
         window.auth = {
             isRegistered: function() { return true; },
             checkAccess: function() { return true; },
-            redirectToRegister: function() {}
+            redirectToRegister: function() {},
+            logout: logout
         };
         return;
     }
@@ -92,7 +104,7 @@
             return false;
         }
     }
-    
+
     // Redirect to register page
     function redirectToRegister() {
         // Only redirect if not already on register page
@@ -135,6 +147,7 @@
     window.auth = {
         isRegistered: isRegistered,
         checkAccess: checkAccess,
-        redirectToRegister: redirectToRegister
+        redirectToRegister: redirectToRegister,
+        logout: logout
     };
 })();

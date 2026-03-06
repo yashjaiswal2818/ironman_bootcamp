@@ -13,17 +13,52 @@
         return (window.FormUtils && window.FormUtils.getTeamName()) || (sessionStorage.getItem('teamName') || '').trim() || 'xyz';
     }
 
-    function collectLogicNodes() {
-        var conditions = document.querySelectorAll('.logic-condition');
-        var actions = document.querySelectorAll('.logic-action');
-        var nodes = [];
-        var len = Math.min(conditions.length, actions.length);
-        for (var i = 0; i < len; i++) {
-            var condition = conditions[i] && conditions[i].value ? conditions[i].value.trim() : '';
-            var action = actions[i] && actions[i].value ? actions[i].value.trim() : '';
-            nodes.push({ condition: condition, action: action });
+    function getRound4SubmittedKey() {
+        var team = getTeamName();
+        return 'gdg_round4_submitted_' + (team || 'xyz');
+    }
+
+    function isRound4AlreadySubmitted() {
+        return sessionStorage.getItem(getRound4SubmittedKey()) === 'true';
+    }
+
+    function setRound4Submitted() {
+        sessionStorage.setItem(getRound4SubmittedKey(), 'true');
+    }
+
+    function applyAlreadySubmittedState(submitBtn, feedbackEl) {
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            if (window.UIUtils) {
+                window.UIUtils.setButtonLoading(submitBtn, false);
+            }
+            submitBtn.innerHTML = '<span class="material-symbols-outlined text-xl">check_circle</span><span class="text-sm font-bold tracking-[0.2em] uppercase relative z-10">ALREADY SUBMITTED</span>';
         }
-        return nodes;
+        if (feedbackEl) {
+            showFeedback(feedbackEl, 'This team has already submitted. Only one submission per group.', false);
+        }
+    }
+
+    function redirectToStageFive() {
+        setTimeout(function () {
+            window.location.href = 'stagefive.html';
+        }, 1500);
+    }
+
+    function collectScenarioResponses() {
+        var cards = document.querySelectorAll('.scenario-card');
+        var responses = [];
+        for (var i = 0; i < cards.length; i++) {
+            var card = cards[i];
+            var scenarioNum = parseInt(card.getAttribute('data-scenario') || (i + 1), 10);
+            var suitSelect = card.querySelector('.scenario-suit');
+            var actionSelect = card.querySelector('.scenario-action');
+            var suit = suitSelect ? suitSelect.value : '';
+            var action = actionSelect ? actionSelect.value : '';
+            responses.push({ scenario: scenarioNum, suit: suit, action: action });
+        }
+        return responses;
     }
 
     var stage4Timer = null;
@@ -56,13 +91,31 @@
 
     function init() {
         var submitBtn = document.getElementById('initialize-uplink-btn');
-        var tacticalEl = document.getElementById('tactical-rationale');
         var feedbackEl = document.getElementById('stage4-feedback');
 
         if (!submitBtn) return;
 
+        // On load: if this team already submitted (from this browser or backend said so), show already-submitted state
+        if (isRound4AlreadySubmitted()) {
+            applyAlreadySubmittedState(submitBtn, feedbackEl);
+            if (window.UIUtils) {
+                window.UIUtils.showToast('This team has already submitted. Only one submission per group.', 'info', 3000);
+            }
+        }
+
         submitBtn.addEventListener('click', function (e) {
             e.preventDefault();
+
+            // Only one submission per group: if we already know it's submitted, don't send again
+            if (isRound4AlreadySubmitted()) {
+                if (window.UIUtils) {
+                    window.UIUtils.showToast('Already submitted. Redirecting…', 'info', 2000);
+                } else {
+                    showFeedback(feedbackEl, 'Already submitted. Redirecting…', false);
+                }
+                redirectToStageFive();
+                return;
+            }
 
             if (stage4Timer && stage4Timer.getRemaining() <= 0) {
                 if (window.UIUtils) {
@@ -74,14 +127,15 @@
             }
 
             var teamName = getTeamName();
-            var nodes = collectLogicNodes();
-            var structuredSubmission = JSON.stringify(nodes);
-            var question = tacticalEl ? tacticalEl.value.trim() : '';
+            var responses = collectScenarioResponses();
+            var structuredSubmission = JSON.stringify(responses);
+            var question = '';
             var status_4 = 'Submitted';
             var score_4 = 0;
 
-            if (nodes.length === 0 || (nodes.length === 1 && !nodes[0].condition && !nodes[0].action)) {
-                showFeedback(feedbackEl, 'Add at least one logic node (condition + action).', true);
+            var incomplete = responses.filter(function (r) { return !r.suit || !r.action; });
+            if (incomplete.length > 0) {
+                showFeedback(feedbackEl, 'Please select Suit and Action for all 8 scenarios.', true);
                 return;
             }
 
@@ -95,12 +149,12 @@
 
             var matrixLoader = null;
             if (window.UIUtils) {
-                window.UIUtils.setButtonLoading(submitBtn, true, 'TRANSMITTING…');
-                matrixLoader = window.UIUtils.showMatrixLoader('TRANSMITTING');
+                window.UIUtils.setButtonLoading(submitBtn, true, 'SUBMITTING…');
+                matrixLoader = window.UIUtils.showMatrixLoader('SUBMITTING');
             } else {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="material-symbols-outlined text-xl animate-pulse">hourglass_empty</span><span class="text-sm font-bold tracking-[0.2em] uppercase relative z-10">TRANSMITTING…</span>';
-                showFeedback(feedbackEl, 'Transmitting to backend…', false);
+                submitBtn.innerHTML = '<span class="material-symbols-outlined text-xl animate-pulse">hourglass_empty</span><span class="text-sm font-bold tracking-[0.2em] uppercase relative z-10">SUBMITTING…</span>';
+                showFeedback(feedbackEl, 'Submitting to backend…', false);
             }
 
             fetch(ROUND_4_ENDPOINT, {
@@ -108,29 +162,56 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
-                .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, status: res.status, data: data }; }); })
+                .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, status: res.status, data: data || {} }; }); })
                 .then(function (result) {
+                    var data = result.data || {};
                     if (matrixLoader) matrixLoader.remove();
+
                     if (result.ok) {
-                        if (window.UIUtils) {
-                            window.UIUtils.showToast('Submitted successfully.', 'success', 2000);
-                            window.UIUtils.setButtonLoading(submitBtn, false);
+                        var alreadySubmitted = data.already_submitted === true ||
+                            (data.message && String(data.message).toLowerCase().indexOf('already submitted') !== -1);
+
+                        if (alreadySubmitted) {
+                            setRound4Submitted();
+                            applyAlreadySubmittedState(submitBtn, feedbackEl);
+                            if (window.UIUtils) {
+                                window.UIUtils.showToast('Already submitted. Only one submission per group.', 'info', 2000);
+                            } else {
+                                showFeedback(feedbackEl, 'Already submitted. Only one submission per group.', false);
+                            }
                         } else {
-                            showFeedback(feedbackEl, 'Submitted successfully.', false);
+                            setRound4Submitted();
+                            if (window.UIUtils) {
+                                window.UIUtils.showToast('Submitted successfully.', 'success', 2000);
+                                window.UIUtils.setButtonLoading(submitBtn, false);
+                            } else {
+                                showFeedback(feedbackEl, 'Submitted successfully.', false);
+                            }
                         }
                         if (stage4Timer) stage4Timer.stop();
-                        setTimeout(function () {
-                            window.location.href = 'leaderboard.html?from=4';
-                        }, 1500);
+                        redirectToStageFive();
                     } else {
-                        var msg = (window.FormUtils && window.FormUtils.parseApiError(result.data, result.status)) || 'Submission failed: ' + result.status;
-                        if (window.UIUtils) {
-                            window.UIUtils.showToast(msg, 'error', 4000);
-                            window.UIUtils.setButtonLoading(submitBtn, false);
+                        // Backend returned error (e.g. 409 or duplicate): if message says already submitted, treat as success and don't allow resubmit
+                        var msg = (window.FormUtils && window.FormUtils.parseApiError(data, result.status)) || 'Submission failed: ' + result.status;
+                        var isAlreadySubmittedError = result.status === 409 || (msg && String(msg).toLowerCase().indexOf('already submitted') !== -1);
+                        if (isAlreadySubmittedError) {
+                            setRound4Submitted();
+                            applyAlreadySubmittedState(submitBtn, feedbackEl);
+                            if (window.UIUtils) {
+                                window.UIUtils.showToast('Already submitted. Only one submission per group.', 'info', 2000);
+                            } else {
+                                showFeedback(feedbackEl, 'Already submitted. Only one submission per group.', false);
+                            }
+                            redirectToStageFive();
                         } else {
-                            showFeedback(feedbackEl, msg, true);
-                            submitBtn.disabled = false;
-                            resetSubmitButton(submitBtn);
+                            if (window.UIUtils) {
+                                window.UIUtils.showToast(msg, 'error', 4000);
+                                window.UIUtils.setButtonLoading(submitBtn, false);
+                            } else {
+                                showFeedback(feedbackEl, msg, true);
+                                submitBtn.disabled = false;
+                                resetSubmitButton(submitBtn);
+                            }
                         }
                     }
                 })
@@ -151,9 +232,9 @@
 
     function resetSubmitButton(btn) {
         btn.innerHTML = '<div class="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>' +
-            '<span class="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">settings_power</span>' +
-            '<span class="text-sm font-bold tracking-[0.2em] uppercase relative z-10">Initialize Logic Uplink</span>' +
-            '<span class="material-symbols-outlined text-xl transition-transform group-hover:-rotate-90">settings_power</span>';
+            '<span class="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">send</span>' +
+            '<span class="text-sm font-bold tracking-[0.2em] uppercase relative z-10">Submit Responses</span>' +
+            '<span class="material-symbols-outlined text-xl transition-transform group-hover:-rotate-90">send</span>';
     }
 
     function showFeedback(el, text, isError) {

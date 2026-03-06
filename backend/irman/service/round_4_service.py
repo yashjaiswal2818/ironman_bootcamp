@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
-from fastapi import UploadFile
+from typing import Tuple
 
 load_dotenv()
 from models.round_4 import Round_4
@@ -15,8 +15,17 @@ async def submit_round_4_service(
     status_4: str,
     question: str,
     score_4: int,
-):
-    
+) -> Tuple[Round_4, bool]:
+    """
+    One submission per team (group). Returns (event, already_submitted).
+    If team already has a submission, returns existing record and True.
+    """
+    existing = await db.execute(
+        select(Round_4).where(Round_4.Team_Name == Team_Name)
+    )
+    existing_event = existing.scalar_one_or_none()
+    if existing_event:
+        return existing_event, True
 
     event = Round_4(
         Team_Name=Team_Name,
@@ -33,4 +42,4 @@ async def submit_round_4_service(
     # Update leaderboard score
     await update_leaderboard_score(db, Team_Name)
 
-    return event
+    return event, False
