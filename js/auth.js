@@ -19,13 +19,13 @@
     // ============================================
     // STAGE LOCK CONFIG - controls which stages are accessible
     // ============================================
-    const MAX_STAGE_UNLOCKED = 2; // Only allow stages 1 and 2
+    const MAX_STAGE_UNLOCKED = 4; // Allow stages 1, 2, 3, and 4 (stage 5 remains locked)
     const STAGE_MAP = {
         'stageone.html': 1,
         'editor.html': 1,
         'stagetwo.html': 2,
         'website.html': 2,
-        // Stage 3 briefing is allowed as a preview, but its hub and later stages remain locked
+        'stagethree.html': 3,
         'stagethree_hub.html': 3,
         'stagefour.html': 4,
         'stagefour_logic_hub.html': 4,

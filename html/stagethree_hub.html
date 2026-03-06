@@ -92,11 +92,6 @@
                     <span class="material-symbols-outlined !text-xs">group</span>
                     <span id="display-team-name">—</span>
                 </div>
-                <div id="stage3-timer"
-                    class="hidden items-center gap-2 px-3 py-1.5 border border-primary/40 bg-black/50 text-primary font-mono text-xs rounded">
-                    <span class="material-symbols-outlined !text-[16px]">timer</span>
-                    <span id="stage3-timer-display">00:00</span>
-                </div>
                 <button class="md:hidden text-white">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
@@ -124,10 +119,9 @@
                     <div class="flex items-center justify-between mb-1.5">
                         <label class="text-xs font-bold tracking-widest text-slate-300 flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-primary !text-[16px]">link</span>
-                            FIGMA SOURCE LINK
+                            FIGMA/CANVA (OPTIONAL)
                         </label>
-                        <span
-                            class="text-[9px] text-primary/60 font-mono opacity-0 group-hover:opacity-100 transition-opacity">REQUIRED</span>
+                        <span class="text-[9px] text-slate-500 font-mono">OPTIONAL</span>
                     </div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -135,7 +129,7 @@
                         </div>
                         <input id="figma-link"
                             class="w-full bg-[#0d1418]/80 border border-[#243b47] text-white text-xs font-mono rounded pl-16 pr-8 py-2.5 focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder-slate-600"
-                            placeholder=" figma.com/file/secure-id..." type="text" />
+                            placeholder=" figma.com/file/... or canva.com/design/..." type="text" />
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                             <span class="material-symbols-outlined text-slate-600 !text-[16px]">lock</span>
                         </div>
@@ -202,13 +196,20 @@
                     </div>
                     <div id="stage3-feedback" class="hidden text-xs font-mono"></div>
                 </div>
-                <button id="transmit-data-btn" type="button"
-                    class="ui-btn w-full sm:w-auto min-w-[10em] flex items-center justify-center gap-2">
-                    <span>
-                        <span class="material-symbols-outlined !text-[16px]">send</span>
-                        <span class="font-bold text-xs tracking-widest">TRANSMIT DATA</span>
-                    </span>
-                </button>
+                <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                    <button id="transmit-data-btn" type="button"
+                        class="ui-btn w-full sm:w-auto min-w-[10em] flex items-center justify-center gap-2">
+                        <span>
+                            <span class="material-symbols-outlined !text-[16px]">send</span>
+                            <span class="font-bold text-xs tracking-widest">TRANSMIT DATA</span>
+                        </span>
+                    </button>
+                    <a href="stagefour.html"
+                        class="w-full sm:w-auto min-w-[10em] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded border border-primary/40 bg-primary/10 text-primary text-xs font-bold tracking-widest hover:bg-primary/20 transition-colors">
+                        <span class="material-symbols-outlined !text-[16px]">arrow_forward</span>
+                        <span>PROCEED TO STAGE 4</span>
+                    </a>
+                </div>
             </div>
         </div>
     </main>
