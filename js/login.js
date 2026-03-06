@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     sessionStorage.setItem('teamEmail', leaderEmail);
                 }
                 if (loginMessageEl) {
-                    loginMessageEl.textContent = "Login successful! Redirecting to Stage 3...";
+                    loginMessageEl.textContent = "Login successful! Redirecting to Stage 5...";
                     loginMessageEl.style.color = '#14b25f';
                     loginMessageEl.style.display = 'block';
                 }
                 setTimeout(() => {
-                    window.location.href = 'html/stagethree.html';
+                    window.location.href = 'html/stagefive.html';
                 }, 1500);
             } else {
                 if (loginMessageEl) {

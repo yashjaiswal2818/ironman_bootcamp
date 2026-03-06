@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mission Complete | Stark Industries Bootcamp</title>
+<!-- Google Fonts: Orbitron for headers, Rajdhani for body/technical text -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Rajdhani:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            stark: {
+              gold: '#D4AF37',
+              goldLight: '#FFD700',
+              obsidian: '#050505',
+              cyan: '#00F0FF',
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          },
+          animation: {
+            'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+            'spin-slow': 'spin 12s linear infinite',
+            'spin-reverse': 'spin-reverse 10s linear infinite',
+            'scanline': 'scanline 8s linear infinite',
+          },
+          keyframes: {
+            glowPulse: {
+              '0%, 100%': { opacity: 0.6 },
+              '50%': { opacity: 1 },
+            },
+            'spin-reverse': {
+              from: { transform: 'rotate(360deg)' },
+              to: { transform: 'rotate(0deg)' },
+            },
+            scanline: {
+              '0%': { transform: 'translateY(-100%)' },
+              '100%': { transform: 'translateY(100vh)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="background-effects">
+    body {
+      background-color: #050505;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Hexagonal Grid Pattern Overlay */
+    .hex-overlay {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.32v12.68l10.99 6.34L25 30V17.32l-11.01-6.34L3 17.32z' fill='%23D4AF37' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    /* Radial glow in center */
+    .radial-glow {
+      background: radial-gradient(circle at center, rgba(212, 175, 55, 0.15) 0%, rgba(5, 5, 5, 0) 70%);
+    }
+
+    /* Scanline effect */
+    .scanline {
+      width: 100%;
+      height: 2px;
+      background: rgba(0, 240, 255, 0.1);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    /* Gold Metallic Button Texture */
+    .gold-btn {
+      background: linear-gradient(135deg, #b8860b 0%, #D4AF37 50%, #b8860b 100%);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4), inset 0 0 5px rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+    }
+    .gold-btn:hover {
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.7), inset 0 0 8px rgba(255, 255, 255, 0.6);
+      transform: scale(1.05);
+    }
+
+    /* Arc Reactor Ring Styling */
+    .arc-ring {
+      border: 2px solid rgba(212, 175, 55, 0.3);
+      border-top: 2px solid rgba(212, 175, 55, 0.8);
+    }
+  </style>
+</head>
+<body class="text-white font-rajdhani flex items-center justify-center relative">
+<!-- BEGIN: Background Elements -->
+<div class="absolute inset-0 hex-overlay pointer-events-none"></div>
+<div class="absolute inset-0 radial-glow pointer-events-none"></div>
+<div class="scanline animate-scanline"></div>
+<!-- END: Background Elements -->
+<!-- BEGIN: HUD Corner Elements -->
+<div class="absolute top-8 left-8 border-l-2 border-t-2 border-stark-gold w-16 h-16 opacity-60"></div>
+<div class="absolute top-8 right-8 border-r-2 border-t-2 border-stark-gold w-16 h-16 opacity-60 text-right">
+<div class="pt-2 pr-4 text-[10px] tracking-widest text-stark-cyan font-bold uppercase">UPLINK: TERMINATED</div>
+</div>
+<div class="absolute bottom-8 left-8 border-l-2 border-b-2 border-stark-gold w-16 h-16 opacity-60 flex items-end">
+<div class="pb-2 pl-4 text-[10px] tracking-widest text-stark-cyan font-bold uppercase">STATUS: VERIFIED</div>
+</div>
+<div class="absolute bottom-8 right-8 border-r-2 border-b-2 border-stark-gold w-16 h-16 opacity-60"></div>
+<!-- END: HUD Corner Elements -->
+<!-- BEGIN: Main Completion Container -->
+<main class="relative z-10 flex flex-col items-center justify-center text-center px-6 max-w-4xl">
+<!-- BEGIN: Arc Reactor Graphic -->
+<div class="relative mb-12 flex items-center justify-center" data-purpose="arc-reactor-display">
+<!-- Outer Rotating Ring -->
+<div class="absolute w-64 h-64 rounded-full border border-stark-gold/20 animate-spin-slow"></div>
+<!-- Inner Technical Rings -->
+<div class="absolute w-52 h-52 rounded-full border-2 border-dashed border-stark-gold/40 animate-spin-reverse"></div>
+<div class="absolute w-44 h-44 rounded-full arc-ring animate-spin-slow"></div>
+<!-- Center Glow and Checkmark -->
+<div class="relative w-36 h-36 bg-stark-gold/10 rounded-full flex items-center justify-center border-4 border-stark-gold shadow-[0_0_50px_rgba(212,175,55,0.4)]">
+<svg class="h-20 w-20 text-stark-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Peripheral Tech Text -->
+
+
+</div>
+<!-- END: Arc Reactor Graphic -->
+<!-- BEGIN: Messaging Section -->
+<header class="mb-10">
+<h1 class="font-orbitron text-5xl md:text-7xl font-black text-stark-gold tracking-[0.2em] mb-4 drop-shadow-[0_0_20px_rgba(212,175,55,0.6)] animate-glow-pulse">
+        MISSION COMPLETE
+      </h1>
+<p class="text-lg md:text-xl font-medium tracking-wide text-gray-300 max-w-2xl mx-auto uppercase">
+        Your submission has been received. Stark Industries will review your schematic.
+      </p>
+</header>
+<!-- END: Messaging Section -->
+<!-- BEGIN: Action Section -->
+<div class="flex flex-col items-center gap-4">
+<a href="../index.html" class="gold-btn font-orbitron px-10 py-4 text-black font-bold text-lg tracking-widest uppercase rounded-sm border border-white/20 no-underline inline-block cursor-pointer">
+        RETURN TO HUB
+      </a>
+<div class="mt-4 text-[10px] text-stark-cyan/50 tracking-[0.5em] uppercase">
+        Encrypting transmission...
+      </div>
+</div>
+<!-- END: Action Section -->
+</main>
+<!-- END: Main Completion Container -->
+<!-- BEGIN: Page Footer -->
+<footer class="absolute bottom-6 w-full text-center px-4">
+<p class="text-xs tracking-widest text-stark-gold/60 uppercase">
+      Organized by <span class="text-stark-gold/90 font-bold">Google Developers Group</span> | Pillai College of Engineering
+    </p>
+</footer>
+<!-- END: Page Footer -->
+</body></html>

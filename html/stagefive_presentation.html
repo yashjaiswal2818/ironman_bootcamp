@@ -216,12 +216,6 @@
 </div>
 <div class="flex items-center gap-3 md:gap-5">
 <div class="hidden sm:flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-stark-red animate-pulse"></span>
-<span class="text-[9px] md:text-[10px] text-white/40 tracking-widest uppercase">Secure</span>
-</div>
-<div id="stage5-timer" class="hidden items-center gap-2 px-3 py-1.5 border border-stark-blue/40 bg-black/50 text-stark-blue font-mono text-xs rounded">
-<span class="material-symbols-outlined text-sm">timer</span>
-<span id="stage5-timer-display">00:00</span>
 </div>
 <div class="text-right hidden md:block">
 <p class="text-[9px] text-white/30 tracking-widest uppercase">Protocol</p>
@@ -276,26 +270,21 @@
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 lg:gap-16 relative z-10">
 <div class="lg:col-span-5 flex flex-col gap-6 md:gap-10">
 <div class="space-y-1 md:space-y-2 border-l-2 border-stark-red pl-3 md:pl-4">
-<h2 class="text-[10px] md:text-xs font-bold tracking-[0.2em] text-stark-red font-header">INPUT STREAM 01</h2>
-<p class="text-xl md:text-2xl lg:text-3xl font-light text-white font-header">Project Metadata</p>
-<p class="text-white/50 text-xs md:text-sm font-light leading-relaxed">Enter schematic identifiers. Encryption active.</p>
+<h2 class="text-[10px] md:text-xs font-bold tracking-[0.2em] text-stark-red font-header">TECH IMPACT PITCH</h2>
+<p class="text-xl md:text-2xl lg:text-3xl font-light text-white font-header">5-Slide Presentation</p>
+<p class="text-white/50 text-xs md:text-sm font-light leading-relaxed">Slide 1: Problem Definition • Slide 2: Problem Impact • Slide 3: Technology Solution • Slide 4: How It Works • Slide 5: Expected Outcome</p>
 </div>
 <div class="space-y-4 md:space-y-8 mt-1 md:mt-2">
 <div class="holo-input-container p-3 md:p-4 rounded-sm group transition-colors hover:bg-white/5">
-<label class="block text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-stark-blue/70 mb-1 md:mb-2 font-header group-focus-within:text-stark-blue transition-colors"> Team Name <span class="text-stark-red">*</span></label>
-<input id="round5-codename" required class="holo-input w-full bg-transparent border-none p-0 text-base md:text-xl text-white placeholder-white/10 focus:ring-0 font-body tracking-wide" placeholder="MARK LXXXV" type="text"/>
-<div class="holo-input-line"></div>
-</div>
-<div class="holo-input-container p-3 md:p-4 rounded-sm group transition-colors hover:bg-white/5">
-<label class="block text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-stark-blue/70 mb-1 md:mb-2 font-header group-focus-within:text-stark-blue transition-colors">Technical Abstract <span class="text-stark-red">*</span></label>
-<textarea id="round5-abstract" required class="holo-input w-full bg-transparent border-none p-0 text-sm md:text-base text-white placeholder-white/10 focus:ring-0 resize-none font-body leading-relaxed h-20 md:h-24" placeholder="Initialize tactical overview..." rows="3"></textarea>
+<label class="block text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-stark-blue/70 mb-1 md:mb-2 font-header group-focus-within:text-stark-blue transition-colors">Pitch Summary / Abstract <span class="text-stark-red">*</span></label>
+<textarea id="round5-abstract" required class="holo-input w-full bg-transparent border-none p-0 text-sm md:text-base text-white placeholder-white/10 focus:ring-0 resize-none font-body leading-relaxed h-20 md:h-24" placeholder="Brief overview of your tech solution and real-world problem..." rows="3"></textarea>
 <div class="holo-input-line"></div>
 </div>
 </div>
 </div>
 <div class="lg:col-span-7 flex flex-col justify-center gap-4 md:gap-6">
 <div id="round5-dropzone" class="min-h-[200px] md:min-h-[240px] schematic-port group cursor-pointer transition-all duration-500 hover:bg-[#C6A15B]/5 relative rounded-sm flex flex-col">
-<input type="file" id="round5-files" name="files" multiple accept=".pdf,.ppt,.pptx,.key,image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" title="Select files"/>
+<input type="file" id="round5-files" name="files" multiple accept=".pdf,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" title="Select files"/>
 <div class="scan-line-overlay"></div>
 <div class="schematic-corner top-0 left-0 border-t-2 border-l-2"></div>
 <div class="schematic-corner top-0 right-0 border-t-2 border-r-2"></div>
@@ -304,10 +293,8 @@
 <div class="absolute inset-3 md:inset-4 border border-dashed border-[#C6A15B]/30 transition-all duration-300 group-hover:border-[#C6A15B]/60 group-hover:inset-4 md:group-hover:inset-6 pointer-events-none"></div>
 <div class="relative h-full flex flex-col items-center justify-center p-4 md:p-8 text-center z-10 pointer-events-none">
 <div class="absolute top-3 right-3 md:top-6 md:right-6 flex items-center gap-1.5 md:gap-2">
-<span class="w-1 h-1 md:w-1.5 md:h-1.5 bg-[#C6A15B] rounded-full animate-pulse"></span>
-<span id="round5-files-label" class="text-[8px] md:text-[9px] font-header tracking-widest text-[#C6A15B]">PORT READY</span>
 </div>
-<h2 class="text-[10px] md:text-xs font-bold tracking-[0.2em] md:tracking-[0.25em] text-[#C6A15B] mb-4 md:mb-8 font-header uppercase opacity-80">Schematic Injection Port <span class="text-stark-red">*</span></h2>
+<h2 class="text-[10px] md:text-xs font-bold tracking-[0.2em] md:tracking-[0.25em] text-[#C6A15B] mb-4 md:mb-8 font-header uppercase opacity-80">Upload 5-Slide Presentation <span class="text-stark-red">*</span></h2>
 <div class="relative mb-3 md:mb-6 group-hover:-translate-y-2 transition-transform duration-500">
 <div class="w-16 h-16 md:w-24 md:h-24 flex items-center justify-center relative">
 <svg class="w-full h-full absolute inset-0 text-[#C6A15B] opacity-20 fill-current animate-spin-slow" viewBox="0 0 100 100"><polygon fill="none" points="50 1, 95 25, 95 75, 50 99, 5 75, 5 25" stroke="currentColor" stroke-width="2"></polygon></svg>
@@ -316,7 +303,7 @@
 </div>
 </div>
 <p class="text-sm md:text-lg font-medium text-white mb-1 md:mb-2 font-header tracking-wide">Drag files or click to browse</p>
-<p class="text-xs md:text-sm text-[#C6A15B]/60 mb-4 md:mb-8 font-mono">.PDF, .PPT, .PPTX, .KEY, .JPG, .PNG, .GIF, .WEBP</p>
+<p class="text-xs md:text-sm text-[#C6A15B]/60 mb-4 md:mb-8 font-mono">.PDF, .PPTX only • Max 8 MB per file</p>
 <span class="text-[9px] md:text-[10px] text-[#C6A15B]/80 font-header tracking-widest">INITIALIZE BROWSER</span>
 </div>
 </div>

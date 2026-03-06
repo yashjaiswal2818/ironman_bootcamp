@@ -8,9 +8,11 @@
     'use strict';
 
     var ROUND_5_ENDPOINT = (window.API_CONFIG && window.API_CONFIG.getUrl('round_5')) || 'http://127.0.0.1:8000/round_5';
+    var MAX_FILE_SIZE_MB = 8;
+    var ALLOWED_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'];
+    var ALLOWED_EXTENSIONS = ['.pdf', '.pptx'];
 
     var formEl = document.getElementById('round5-form');
-    var codenameEl = document.getElementById('round5-codename');
     var abstractEl = document.getElementById('round5-abstract');
     var filesInput = document.getElementById('round5-files');
     var filesLabel = document.getElementById('round5-files-label');
@@ -19,7 +21,6 @@
     var messageEl = document.getElementById('round5-message');
 
     var previewObjectUrls = [];
-    var stage5Timer = null;
 
     function getTeamName() {
         return (window.FormUtils && window.FormUtils.getTeamName()) || (sessionStorage.getItem('teamName') || '').trim() || 'xyz';
@@ -36,8 +37,26 @@
         if (messageEl) messageEl.classList.add('hidden');
     }
 
-    function isImageFile(file) {
-        return file.type && file.type.indexOf('image/') === 0;
+    function isAllowedFile(file) {
+        var name = (file.name || '').toLowerCase();
+        var ext = ALLOWED_EXTENSIONS.some(function (e) { return name.endsWith(e); });
+        var type = file.type && ALLOWED_TYPES.indexOf(file.type) !== -1;
+        return ext || type;
+    }
+
+    function validateStage5Files(files) {
+        if (!files || files.length === 0) return { valid: true };
+        var maxBytes = MAX_FILE_SIZE_MB * 1024 * 1024;
+        for (var i = 0; i < files.length; i++) {
+            var f = files[i];
+            if (!isAllowedFile(f)) {
+                return { valid: false, message: '"' + f.name + '" is not allowed. Only .PDF and .PPTX files are accepted.' };
+            }
+            if (f.size > maxBytes) {
+                return { valid: false, message: '"' + f.name + '" exceeds ' + MAX_FILE_SIZE_MB + ' MB limit.' };
+            }
+        }
+        return { valid: true };
     }
 
     function renderPreviews(files) {
@@ -52,91 +71,48 @@
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             var card = document.createElement('div');
-            card.className = 'flex-shrink-0 rounded border border-[#C6A15B]/30 bg-black/40 overflow-hidden';
-            if (isImageFile(file)) {
-                var url = URL.createObjectURL(file);
-                previewObjectUrls.push(url);
-                var img = document.createElement('img');
-                img.src = url;
-                img.alt = file.name;
-                img.className = 'block w-20 h-20 md:w-24 md:h-24 object-cover';
-                card.style.width = '5rem';
-                card.style.maxWidth = '6rem';
-                card.appendChild(img);
-                var nameWrap = document.createElement('div');
-                nameWrap.className = 'px-1.5 py-1 truncate text-[9px] md:text-[10px] text-white/80 font-mono max-w-[5rem] md:max-w-[6rem]';
-                nameWrap.title = file.name;
-                nameWrap.textContent = file.name;
-                card.appendChild(nameWrap);
-            } else {
-                card.className += ' flex flex-col items-center justify-center p-3 w-24 md:w-28';
-                var icon = document.createElement('span');
-                icon.className = 'material-symbols-outlined text-[#C6A15B] text-2xl md:text-3xl mb-1';
-                icon.textContent = 'description';
-                card.appendChild(icon);
-                var nameWrap = document.createElement('div');
-                nameWrap.className = 'text-[9px] md:text-[10px] text-white/80 font-mono text-center truncate w-full px-1';
-                nameWrap.title = file.name;
-                nameWrap.textContent = file.name;
-                card.appendChild(nameWrap);
-            }
+            card.className = 'flex-shrink-0 rounded border border-[#C6A15B]/30 bg-black/40 overflow-hidden flex flex-col items-center justify-center p-3 w-24 md:w-28';
+            var icon = document.createElement('span');
+            icon.className = 'material-symbols-outlined text-[#C6A15B] text-2xl md:text-3xl mb-1';
+            icon.textContent = 'description';
+            card.appendChild(icon);
+            var nameWrap = document.createElement('div');
+            nameWrap.className = 'text-[9px] md:text-[10px] text-white/80 font-mono text-center truncate w-full px-1';
+            nameWrap.title = file.name;
+            nameWrap.textContent = file.name;
+            card.appendChild(nameWrap);
             previewEl.appendChild(card);
         }
     }
 
     if (filesInput) {
         filesInput.addEventListener('change', function () {
-            var files = this.files;
-            var count = files ? files.length : 0;
-            if (filesLabel) {
-                filesLabel.textContent = count ? count + ' FILE(S) SELECTED' : 'PORT READY';
+            var rawFiles = this.files;
+            if (!rawFiles || rawFiles.length === 0) {
+                if (filesLabel) filesLabel.textContent = 'PORT READY';
+                renderPreviews([]);
+                return;
             }
-            renderPreviews(files);
+            var validation = validateStage5Files(rawFiles);
+            if (!validation.valid) {
+                if (window.UIUtils) window.UIUtils.showToast(validation.message, 'error', 4000);
+                else showMessage(validation.message, true);
+                this.value = '';
+                if (filesLabel) filesLabel.textContent = 'PORT READY';
+                renderPreviews([]);
+                return;
+            }
+            var count = rawFiles.length;
+            if (filesLabel) filesLabel.textContent = count + ' FILE(S) SELECTED';
+            renderPreviews(rawFiles);
         });
-    }
-
-    function initTimer() {
-        var timerWrap = document.getElementById('stage5-timer');
-        var timerDisplay = document.getElementById('stage5-timer-display');
-        var submitBtn = document.getElementById('round5-submit-btn');
-
-        if (!timerWrap || !timerDisplay) return;
-
-        timerWrap.classList.remove('hidden');
-        timerWrap.classList.add('flex');
-
-        stage5Timer = window.TimerUtils.init('STAGE_5_DURATION', timerDisplay, function () {
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-            if (messageEl) {
-                showMessage('Time is up. Submission disabled.', true);
-            }
-        });
-
-        stage5Timer.start();
     }
 
     function handleSubmit(e) {
         if (e && e.preventDefault) e.preventDefault();
 
         (async function () {
-            if (stage5Timer && stage5Timer.getRemaining() <= 0) {
-                if (window.UIUtils) {
-                    window.UIUtils.showToast('Time is up. Submission disabled.', 'error', 3000);
-                } else {
-                    showMessage('Time is up. Submission disabled.', true);
-                }
-                return;
-            }
-
             var teamName = getTeamName();
-            var codename = codenameEl ? (codenameEl.value || '').trim() : '';
-            if (!codename) {
-                showMessage('Project Codename is required.', true);
-                return;
-            }
             var abstract = abstractEl ? (abstractEl.value || '').trim() : '';
             if (!abstract) {
                 showMessage('Technical Abstract is required.', true);
@@ -144,15 +120,13 @@
             }
             var fileList = filesInput && filesInput.files ? filesInput.files : [];
             if (fileList.length === 0) {
-                showMessage('Please upload at least one file (PDF, PPT, PPTX, KEY, or images).', true);
+                showMessage('Please upload at least one file (.PDF or .PPTX, max 8 MB each).', true);
                 return;
             }
-            if (fileList.length > 0 && window.FormUtils && window.FormUtils.validateFileSize) {
-                var fs = window.FormUtils.validateFileSize(fileList);
-                if (!fs.valid) {
-                    showMessage(fs.message, true);
-                    return;
-                }
+            var fileValidation = validateStage5Files(fileList);
+            if (!fileValidation.valid) {
+                showMessage(fileValidation.message, true);
+                return;
             }
 
             var formData = new FormData();
@@ -188,9 +162,8 @@
                     } else {
                         showMessage(successMsg, false);
                     }
-                    if (stage5Timer) stage5Timer.stop();
                     setTimeout(function () {
-                        window.location.href = 'leaderboard.html?from=5';
+                        window.location.href = 'mission_complete.html';
                     }, 1500);
                 } else {
                     var errMsg = data.detail || 'Submission failed: ' + res.status;
@@ -224,7 +197,4 @@
         submitBtn.addEventListener('click', handleSubmit);
     }
 
-    if (window.TimerUtils) {
-        initTimer();
-    }
 })();

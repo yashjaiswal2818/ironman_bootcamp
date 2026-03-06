@@ -19,7 +19,7 @@
     // ============================================
     // STAGE LOCK CONFIG - controls which stages are accessible
     // ============================================
-    const MAX_STAGE_UNLOCKED = 2; // Only stages 1 and 2; 3, 4, 5 and leaderboard blocked
+    const MAX_STAGE_UNLOCKED = 0; // All stages require login; only stage 5 unlocked when logged in
     const STAGE_MAP = {
         'stageone.html': 1,
         'editor.html': 1,
@@ -36,8 +36,8 @@
 
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    // Stage 3+ pages enabled for logged-in users
-    const LOGIN_UNLOCKED_PAGES = ['stagethree.html', 'stagethree_hub.html', 'stagefour.html', 'stagefour_logic_hub.html'];
+    // Stage 5 only - enabled for logged-in users (stages 1-4 disabled)
+    const LOGIN_UNLOCKED_PAGES = ['stagefive.html', 'stagefive_presentation.html'];
 
     (function enforceStageLock() {
         const stage = STAGE_MAP[currentPage];
