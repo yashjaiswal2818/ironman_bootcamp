@@ -3,9 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginMessageEl = document.getElementById('login-message');
     const submitBtn = document.getElementById('login-submit-btn');
 
+    // Finalist whitelist: only these 5 teams can login (no backend call)
+    const FINALISTS = [
+        { team: 'Pixel Nova', email: 'devjithkurup@gmail.com' },
+        { team: 'Tech strikers', email: 'bhavesh25beit@student.mes.ac.in' },
+        { team: 'Thunder Strike Alliance', email: 'alpharahul19@gmail.com' },
+        { team: 'JARVIS', email: 'bhavyasoni707@gmail.com' },
+        { team: '4Script', email: 'kaustubhb25comp@student.mes.ac.in' }
+    ];
+
+    function isFinalist(teamName, email) {
+        var t = (teamName || '').trim().toLowerCase();
+        var e = (email || '').trim().toLowerCase();
+        return FINALISTS.some(function (f) {
+            return f.team.toLowerCase() === t && f.email.toLowerCase() === e;
+        });
+    }
+
     if (!loginForm) return;
 
-    loginForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
         const teamName = document.getElementById('login-team-name').value.trim();
@@ -13,64 +30,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!teamName || !leaderEmail) return;
 
-        let loginSuccess = false;
-        try {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>AUTHENTICATING...</span><span class="btn-arrow">→</span>';
-            if (loginMessageEl) loginMessageEl.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>AUTHENTICATING...</span><span class="btn-arrow">→</span>';
+        if (loginMessageEl) loginMessageEl.style.display = 'none';
 
-            // Check if endpoint is using Leader_Email or Loader_Email based on requirements
-            const url = `https://gdg-ironman-participants-latest-1.onrender.com/login?Team_Name=${encodeURIComponent(teamName)}&Leader_Email=${encodeURIComponent(leaderEmail)}`;
-            const fallbackUrl = `https://gdg-ironman-participants-latest-1.onrender.com/login?Team_Name=${encodeURIComponent(teamName)}&Loader_Email=${encodeURIComponent(leaderEmail)}`;
-
-            let response = await fetch(fallbackUrl); // Using Loader_Email as per user url example, although Leader_Email was mentioned. It's safer to use the one from the provided URL.
-
-            // If the above fails, let's try the logical one
-            if (!response.ok) {
-                response = await fetch(url);
-            }
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const data = await response.json();
-
-            if (data.flag === "Success") {
-                loginSuccess = true;
-                sessionStorage.setItem('teamName', data.Team_Name);
-                if (leaderEmail) {
-                    sessionStorage.setItem('teamEmail', leaderEmail);
-                }
-                if (loginMessageEl) {
-                    loginMessageEl.textContent = "Login successful! Redirecting to Stage 5...";
-                    loginMessageEl.style.color = '#14b25f';
-                    loginMessageEl.style.display = 'block';
-                }
-                setTimeout(() => {
-                    window.location.href = 'html/stagefive.html';
-                }, 1500);
-            } else {
-                if (loginMessageEl) {
-                    loginMessageEl.textContent = "Login failed. Name or email is wrong, please try again.";
-                    loginMessageEl.style.color = '#e53e3e';
-                    loginMessageEl.style.display = 'block';
-                }
-            }
-        } catch (error) {
-            console.error("Login Error:", error);
+        if (isFinalist(teamName, leaderEmail)) {
+            sessionStorage.setItem('teamName', teamName);
+            sessionStorage.setItem('teamEmail', leaderEmail);
             if (loginMessageEl) {
-                loginMessageEl.textContent = "Login failed. Name or email is wrong, please try again.";
+                loginMessageEl.textContent = "Login successful! Redirecting to Stage 5...";
+                loginMessageEl.style.color = '#14b25f';
+                loginMessageEl.style.display = 'block';
+            }
+            submitBtn.innerHTML = '<span>REDIRECTING...</span><span class="btn-arrow">→</span>';
+            setTimeout(() => {
+                window.location.href = 'html/stagefive.html';
+            }, 1500);
+        } else {
+            if (loginMessageEl) {
+                loginMessageEl.textContent = "Access denied. Invalid credentials.";
                 loginMessageEl.style.color = '#e53e3e';
                 loginMessageEl.style.display = 'block';
             }
-        } finally {
-            if (!loginSuccess) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>AUTHENTICATE</span><span class="btn-arrow">→</span>';
-            } else {
-                submitBtn.innerHTML = '<span>REDIRECTING...</span><span class="btn-arrow">→</span>';
-            }
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>AUTHENTICATE</span><span class="btn-arrow">→</span>';
         }
     });
 });
