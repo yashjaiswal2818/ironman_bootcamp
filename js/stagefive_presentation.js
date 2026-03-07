@@ -26,6 +26,37 @@
         return (window.FormUtils && window.FormUtils.getTeamName()) || (sessionStorage.getItem('teamName') || '').trim() || 'xyz';
     }
 
+    function getRound5SubmittedKey() {
+        var team = getTeamName();
+        return 'gdg_round5_submitted_' + (team || 'xyz');
+    }
+
+    function isRound5AlreadySubmitted() {
+        return sessionStorage.getItem(getRound5SubmittedKey()) === 'true';
+    }
+
+    function setRound5Submitted() {
+        sessionStorage.setItem(getRound5SubmittedKey(), 'true');
+    }
+
+    function applyAlreadySubmittedState() {
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            if (window.UIUtils) window.UIUtils.setButtonLoading(submitBtn, false);
+            submitBtn.innerHTML = '<span class="material-symbols-outlined text-base md:text-lg">check_circle</span><span class="font-bold tracking-[0.15em] md:tracking-[0.2em] text-xs md:text-sm font-header uppercase">ALREADY SUBMITTED</span>';
+        }
+        if (filesInput) filesInput.disabled = true;
+        if (abstractEl) abstractEl.disabled = true;
+        showMessage('This team has already submitted. Only one submission per group.', true);
+    }
+
+    function redirectToMissionComplete() {
+        setTimeout(function () {
+            window.location.href = 'mission_complete.html';
+        }, 1500);
+    }
+
     function showMessage(text, isError) {
         if (!messageEl) return;
         messageEl.textContent = text;
@@ -112,6 +143,13 @@
         if (e && e.preventDefault) e.preventDefault();
 
         (async function () {
+            if (isRound5AlreadySubmitted()) {
+                if (window.UIUtils) window.UIUtils.showToast('Already submitted. Redirecting…', 'info', 2000);
+                else showMessage('Already submitted. Redirecting…', false);
+                redirectToMissionComplete();
+                return;
+            }
+
             var teamName = getTeamName();
             var abstract = abstractEl ? (abstractEl.value || '').trim() : '';
             if (!abstract) {
@@ -155,24 +193,41 @@
                 var data = await res.json().catch(function () { return {}; });
                 if (matrixLoader) matrixLoader.remove();
                 if (res.ok) {
-                    var successMsg = 'Submitted successfully. ' + (data.urls && data.urls.length ? data.urls.length + ' file(s) uploaded.' : '');
-                    if (window.UIUtils) {
-                        window.UIUtils.showToast(successMsg, 'success', 2000);
-                        window.UIUtils.setButtonLoading(submitBtn, false);
+                    var alreadySubmitted = data.already_submitted === true ||
+                        (data.message && String(data.message).toLowerCase().indexOf('already submitted') !== -1);
+
+                    if (alreadySubmitted) {
+                        setRound5Submitted();
+                        applyAlreadySubmittedState();
+                        if (window.UIUtils) window.UIUtils.showToast('Already submitted. Only one submission per group.', 'info', 2000);
+                        redirectToMissionComplete();
                     } else {
-                        showMessage(successMsg, false);
+                        setRound5Submitted();
+                        var successMsg = 'Submitted successfully. ' + (data.urls && data.urls.length ? data.urls.length + ' file(s) uploaded.' : '');
+                        if (window.UIUtils) {
+                            window.UIUtils.showToast(successMsg, 'success', 2000);
+                            window.UIUtils.setButtonLoading(submitBtn, false);
+                        } else {
+                            showMessage(successMsg, false);
+                        }
+                        redirectToMissionComplete();
                     }
-                    setTimeout(function () {
-                        window.location.href = 'mission_complete.html';
-                    }, 1500);
                 } else {
-                    var errMsg = data.detail || 'Submission failed: ' + res.status;
-                    if (window.UIUtils) {
-                        window.UIUtils.showToast(errMsg, 'error', 4000);
-                        window.UIUtils.setButtonLoading(submitBtn, false);
+                    var errMsg = (window.FormUtils && window.FormUtils.parseApiError(data, res.status)) || data.message || 'Submission failed: ' + res.status;
+                    var isAlreadySubmittedError = res.status === 409 || (errMsg && String(errMsg).toLowerCase().indexOf('already submitted') !== -1);
+                    if (isAlreadySubmittedError) {
+                        setRound5Submitted();
+                        applyAlreadySubmittedState();
+                        if (window.UIUtils) window.UIUtils.showToast('Already submitted. Only one submission per group.', 'info', 2000);
+                        redirectToMissionComplete();
                     } else {
-                        showMessage(errMsg, true);
-                        submitBtn.disabled = false;
+                        if (window.UIUtils) {
+                            window.UIUtils.showToast(errMsg, 'error', 4000);
+                            window.UIUtils.setButtonLoading(submitBtn, false);
+                        } else {
+                            showMessage(errMsg, true);
+                            submitBtn.disabled = false;
+                        }
                     }
                 }
             } catch (err) {
@@ -195,6 +250,11 @@
         formEl.addEventListener('submit', handleSubmit);
     } else if (submitBtn) {
         submitBtn.addEventListener('click', handleSubmit);
+    }
+
+    if (isRound5AlreadySubmitted()) {
+        applyAlreadySubmittedState();
+        if (window.UIUtils) window.UIUtils.showToast('This team has already submitted. Only one submission per group.', 'info', 3000);
     }
 
 })();

@@ -139,18 +139,23 @@ async def submit_round_5_endpoint(
     files: List[UploadFile] = File(...),
     db: AsyncSession = Depends(get_db)
 ):
-
-    event, uploaded_urls = await submit_round_5_service(
+    event, uploaded_urls, already_submitted = await submit_round_5_service(
         db=db,
         Team_Name=Team_Name,
         abstract=abstract,
         score_5=score_5,
         files=files
     )
-
+    if already_submitted:
+        return {
+            "message": "Already submitted",
+            "urls": [],
+            "already_submitted": True
+        }
     return {
         "message": "Submitted successfully",
-        "urls": uploaded_urls
+        "urls": uploaded_urls,
+        "already_submitted": False
     }
 
 @app.post("/round_2")
