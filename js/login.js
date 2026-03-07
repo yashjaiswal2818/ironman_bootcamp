@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginMessageEl = document.getElementById('login-message');
     const submitBtn = document.getElementById('login-submit-btn');
 
-    // Finalist whitelist: only these 5 teams can login (no backend call)
     const FINALISTS = [
         { team: 'Pixel Nova', email: 'devjithkurup@gmail.com' },
         { team: 'Tech strikers', email: 'bhavesh25beit@student.mes.ac.in' },

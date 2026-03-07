@@ -9,8 +9,8 @@
 
     var ROUND_5_ENDPOINT = (window.API_CONFIG && window.API_CONFIG.getUrl('round_5')) || 'http://127.0.0.1:8000/round_5';
     var MAX_FILE_SIZE_MB = 8;
-    var ALLOWED_TYPES = ['application/pdf', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'];
-    var ALLOWED_EXTENSIONS = ['.pdf', '.pptx'];
+    var ALLOWED_TYPES = ['application/vnd.openxmlformats-officedocument.presentationml.presentation'];
+    var ALLOWED_EXTENSIONS = ['.pptx'];
 
     var formEl = document.getElementById('round5-form');
     var abstractEl = document.getElementById('round5-abstract');
@@ -81,7 +81,7 @@
         for (var i = 0; i < files.length; i++) {
             var f = files[i];
             if (!isAllowedFile(f)) {
-                return { valid: false, message: '"' + f.name + '" is not allowed. Only .PDF and .PPTX files are accepted.' };
+                return { valid: false, message: '"' + f.name + '" is not allowed. Only .PPTX files are accepted.' };
             }
             if (f.size > maxBytes) {
                 return { valid: false, message: '"' + f.name + '" exceeds ' + MAX_FILE_SIZE_MB + ' MB limit.' };
@@ -158,7 +158,7 @@
             }
             var fileList = filesInput && filesInput.files ? filesInput.files : [];
             if (fileList.length === 0) {
-                showMessage('Please upload at least one file (.PDF or .PPTX, max 8 MB each).', true);
+                showMessage('Please upload at least one file (.PPTX only, max 8 MB each).', true);
                 return;
             }
             var fileValidation = validateStage5Files(fileList);
